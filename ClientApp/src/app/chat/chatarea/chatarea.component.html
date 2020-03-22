@@ -18,7 +18,7 @@
                   <p>
                     {{msg.message}}
                   </p>
-                  <span class="time_date"> {{msg.date | date:'medium'}} </span>
+                  <span class="time_date"> {{msg.date | timeAgo}} </span>
                 </div>
               </div>
             </div>
@@ -27,7 +27,7 @@
                 <p>
                   {{msg.message}}
                 </p>
-                <span class="time_date"> {{msg.date | date:'medium'}}</span>
+                <span class="time_date"> {{msg.date | timeAgo}}</span>
               </div>
             </div>
           </div>

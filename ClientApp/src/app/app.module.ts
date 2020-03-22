@@ -8,20 +8,22 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { ChatareaComponent } from './chat/chatarea/chatarea.component';
 import { ChatService } from './chat/service/chat.service';
+import { TimeAgoPipe } from 'time-ago-pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     ChatareaComponent,
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-          { path: 'chat', component: ChatareaComponent },
-      ],{ initialNavigation: false })
+      { path: 'chat', component: ChatareaComponent },
+    ], { initialNavigation: false })
   ],
   providers: [ChatService],
   bootstrap: [AppComponent]
