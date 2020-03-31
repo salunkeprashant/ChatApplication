@@ -1,4 +1,5 @@
 using ChatApplication.Configuration;
+using ChatApplication.Contracts;
 using ChatApplication.Model;
 using ChatApplication.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -10,24 +11,12 @@ namespace ChatApplication.Hubs
 {
     public class ChatHub : Hub
     {
-        private MongoClient client;
-        private IMongoDatabase database;
-        private readonly Collections collections;
-
-        public ChatHub(IChatDatabaseSettings settings)
+        public ChatHub()
         {
-            client = new MongoClient(settings.ConnectionString);
-            database = client.GetDatabase(settings.DatabaseName);
-            collections = settings.Collections;
         }
-        public async Task SendMessage(Message message)
+        public async Task SendPrivateMessage(Message message)
         {
-            await Clients.All.SendAsync("MessageReceived", message);
-        }
-
-        private void GetUsers()
-        {
-            var users = database.GetCollection<User>(collections.UserCollectionName);
+            await Clients.User(message.username).SendAsync("MessageReceived", message);
         }
     }
 }

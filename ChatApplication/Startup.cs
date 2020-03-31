@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using ChatApplication.Hubs;
 using ChatApplication.Configuration;
 using Microsoft.Extensions.Options;
+using ChatApplication.Contracts;
+using ChatApplication.Repository;
 
 namespace ChatApplication
 {
@@ -29,6 +31,8 @@ namespace ChatApplication
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddControllers();
+
             services.AddSignalR();
 
             // Configure database settings
@@ -38,24 +42,18 @@ namespace ChatApplication
             services.AddSingleton<IChatDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
 
+            // Inject repositories
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            
+            app.UseHsts();
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
@@ -65,6 +63,8 @@ namespace ChatApplication
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+                
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
 

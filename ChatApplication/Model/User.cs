@@ -1,21 +1,26 @@
-﻿using MongoDB.Bson;
+﻿using ChatApplication.Helper;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace ChatApplication.Model
 {
-    public class User
+    [BsonCollection("Users")]
+    public class User : Document
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
-        [JsonProperty]
-        public string PersonalInformation { get; set; }
+        public PersonalInformation PersonalInformation { get; set; }
 
         public Address Addresses { get; set; }
 
         public string Username { get; set; }
+    }
+
+    public class PersonalInformation
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public long ContactNumber { get; set; }
+        public string Email { get; set; }
     }
 
     public class Address

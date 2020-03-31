@@ -1,4 +1,5 @@
 using ChatApplication.Configuration;
+using ChatApplication.Contracts;
 using ChatApplication.Hubs;
 using ChatApplication.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -27,10 +28,9 @@ namespace ChatApplication.Test
             Mock<IChatDatabaseSettings> mockChatDbSttrings = new Mock<IChatDatabaseSettings>();
             mockChatDbSttrings.Setup(x => x.DatabaseName).Returns("Chat");
             mockChatDbSttrings.Setup(x => x.ConnectionString).Returns("mongodb://localhost:27017");
-            mockChatDbSttrings.Setup(x => x.Collections).Returns(new Collections() { UserCollectionName = "Users"});
 
             // Create instance and invoke methods
-            ChatHub chatHub = new ChatHub(mockChatDbSttrings.Object) 
+            ChatHub chatHub = new ChatHub() 
             {
                 Clients = mockClients.Object
             };
@@ -42,7 +42,7 @@ namespace ChatApplication.Test
             message.type = "Sent";
             message.username = "Prashant";
 
-            await chatHub.SendMessage(message);
+            await chatHub.SendPrivateMessage(message);
 
             // Asserts, to verfiy 
             mockClients.Verify(clients => clients.All, Times.Once);
