@@ -14,6 +14,7 @@ namespace ChatApplication.Hubs
         public ChatHub()
         {
         }
+
         public async Task SendPrivateMessage(Message message)
         {
             await Clients.User(message.username).SendAsync("MessageReceived", message);

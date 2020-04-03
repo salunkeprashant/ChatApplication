@@ -1,0 +1,72 @@
+<section class="signin-wrap animate-fading" *ngIf="!isLoogedIn">
+    <div class="container is-fluid">
+        <div class="columns">
+            <div class="column is-four-fifths">
+                <div class="right-wrap">
+                    <div class="login form-main animate-zoom">
+                        <div class="form-main-top"></div>
+                        <div class="container is-full">
+                            <form class="no-margin-t" name="frmLogin" #frmLogin="ngForm"
+                                (ngSubmit)="frmLogin.form.valid && login()" novalidate>
+                                <label class="main-label">Please login to your account</label>
+                                <div class="field mt-40">
+                                    <label class="label">User Name</label>
+                                    <div class="control p-r">
+                                        <input class="input" type="Username" placeholder="Username" id="txtUsername"
+                                            name="txtUsername" #txtUsername="ngModel" [(ngModel)]="credentials.Username"
+                                            required Username />
+                                        <span class="first"><img src="assets/images/person.png"></span>
+
+                                        <div *ngIf="txtUsername.invalid && (txtUsername.dirty || txtUsername.touched)"
+                                            class="alert alert-error-message">
+                                            <div *ngIf="txtUsername.errors?.required">
+                                                Username is required
+                                            </div>
+
+                                            <div *ngIf="txtUsername.errors?.email">
+                                                Username a valid email address
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field mb-0">
+                                    <label class="label">Password</label>
+                                    <div class="control p-r">
+                                        <input class="input mb-40" type="{{defaultPasswordFieldType}}" id="txtPassword"
+                                            name="txtPassword" #txtPassword="ngModel" placeholder="Password"
+                                            [(ngModel)]="credentials.Password" required />
+                                        <span class="first">
+                                            <img src="assets/images/lock.png"></span>
+                                        <span toggle="#password-field" class="toggle-password eye-a"
+                                            (click)="changePasswordFieldType()"><img src="assets/images/eye.png"></span>
+
+                                        <div *ngIf="txtPassword.invalid && (txtPassword.dirty || txtPassword.touched)"
+                                            class="alert alert-error-message">
+                                            <div *ngIf="txtPassword.errors?.required">
+                                                Password is required
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-error-message">
+                                            <div *ngIf="errors && frmLogin.valid">
+                                                {{ errors }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="field mt-40">
+                                    <div class="control">
+                                        <button class="button is-link" type="submit"
+                                            [disabled]='!frmLogin.valid'>Login</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Message } from '../models/message';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ChatService {
@@ -20,11 +21,11 @@ export class ChatService {
   }
 
   sendMessage(message: Message) {
-    this.hubConnection.invoke('SendMessage', message);
+    this.hubConnection.invoke('SendPrivateMessage', message);
   }
 
   private buildConnection() {
-    this.hubConnection = new HubConnectionBuilder().withUrl(window.location.href + 'ChatHub').build();
+    this.hubConnection = new HubConnectionBuilder().withUrl(environment.hubUrl + 'ChatHub').build();
   }
 
   private startConnection(): void {

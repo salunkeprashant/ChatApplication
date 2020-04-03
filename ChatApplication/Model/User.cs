@@ -11,9 +11,11 @@ namespace ChatApplication.Model
         public PersonalInformation PersonalInformation { get; set; }
 
         public Address[] Addresses { get; set; }
-
         public string Username { get; set; }
         public string Password { get; set; }
+
+        [BsonIgnore]
+        public string BearerToken { get; set; }
     }
 
     public class PersonalInformation

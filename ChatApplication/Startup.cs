@@ -10,6 +10,10 @@ using ChatApplication.Configuration;
 using Microsoft.Extensions.Options;
 using ChatApplication.Contracts;
 using ChatApplication.Repository;
+using System.Text;
+using ChatApplication.Helper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ChatApplication
 {
@@ -35,6 +39,15 @@ namespace ChatApplication
 
             services.AddSignalR();
 
+            // Enable CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy(Constants.PolicyName, builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+
             // Configure database settings
             services.Configure<ChatDatabaseSettings>(
                 Configuration.GetSection(nameof(ChatDatabaseSettings)));
@@ -44,12 +57,32 @@ namespace ChatApplication
 
             // Inject repositories
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
+            // configure jwt authentication
+            var key = Encoding.ASCII.GetBytes(Constants.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             app.UseHsts();
 
             app.UseStaticFiles();
@@ -61,10 +94,16 @@ namespace ChatApplication
 
             app.UseRouting();
 
+            app.UseCors(Constants.PolicyName);
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-                
+                endpoints.MapControllers().RequireCors(Constants.PolicyName);
+
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
 

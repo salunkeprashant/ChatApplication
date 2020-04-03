@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using ChatApplication.Contracts;
+using ChatApplication.Helper;
 using ChatApplication.Model;
 using ChatApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization;
 
 namespace ChatApplication.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IBaseRepository<User> userRepository;
 
-        public LoginController(IBaseRepository<User> paramUserRepository)
+        public UsersController(IBaseRepository<User> paramUserRepository)
         {
             userRepository = paramUserRepository;
         }
 
-        [HttpPost]
+        [HttpPost("login"), AllowAnonymous]
         public async Task<IActionResult> Post([FromBody]LoginViewModel credentials)
         {
             if (!ModelState.IsValid)
@@ -33,10 +40,26 @@ namespace ChatApplication.Controllers
             
             var user = await this.userRepository.FindOneAsync(userPredicate);
 
-            return Ok(user.ToString());
+            // authentication successful so generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Constants.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username.ToString()),
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.BearerToken = tokenHandler.WriteToken(token);
+
+            return Ok(user);
         }
 
-        [HttpPost("NewUser")]
+        [HttpPost("register"), AllowAnonymous]
         public async Task<IActionResult> CreateUser([FromBody]UserViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -69,9 +92,15 @@ namespace ChatApplication.Controllers
             return Ok();
         }
 
-        [HttpGet("Ping")]
+        [HttpGet("Ping"), AllowAnonymous]
         public string Ping() {
-            return "Api is running";
+            return "Api is up and running";
+        }
+
+        [HttpGet("AuthPing")]
+        public string AuthPing()
+        {
+            return "You are authorized to access the API";
         }
     }
 }
