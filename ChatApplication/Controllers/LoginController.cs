@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using ChatApplication.Contracts;
 using ChatApplication.Model;
 using ChatApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson.Serialization;
 
 namespace ChatApplication.Controllers
 {
@@ -10,11 +14,11 @@ namespace ChatApplication.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IBaseRepository<User> baseRepository;
+        private readonly IBaseRepository<User> userRepository;
 
-        public LoginController(IBaseRepository<User> paramBaseRepository)
+        public LoginController(IBaseRepository<User> paramUserRepository)
         {
-            baseRepository = paramBaseRepository;
+            userRepository = paramUserRepository;
         }
 
         [HttpPost]
@@ -25,7 +29,11 @@ namespace ChatApplication.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok();
+            Expression<Func<User, bool>> userPredicate = (x => x.Username == credentials.Username && x.Password == credentials.Password);
+            
+            var user = await this.userRepository.FindOneAsync(userPredicate);
+
+            return Ok(user.ToString());
         }
 
         [HttpPost("NewUser")]
@@ -40,17 +48,23 @@ namespace ChatApplication.Controllers
             var user = new User();
             user.Username = viewModel.Username;
 
-            user.Addresses = new Address();
-            user.Addresses.Name = viewModel.AddressName;
-            user.Addresses.AddressLine = viewModel.AddressLine;
+            List<Address> addresses = new List<Address>();
+            addresses.Add(new Address
+            {
+                Name = viewModel.AddressName,
+                AddressLine = viewModel.AddressLine
+            });
 
-            user.PersonalInformation = new PersonalInformation();
-            user.PersonalInformation.FirstName = viewModel.FirstName;
-            user.PersonalInformation.LastName = viewModel.LastName;
-            user.PersonalInformation.ContactNumber = viewModel.ContactNumber;
-            user.PersonalInformation.Email = viewModel.Email;
+            user.Addresses = addresses.ToArray();
+            user.PersonalInformation = new PersonalInformation
+            {
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                ContactNumber = viewModel.ContactNumber,
+                Email = viewModel.Email
+            };
 
-            await baseRepository.InsertOneAsync(user);
+            await userRepository.InsertOneAsync(user);
 
             return Ok();
         }
