@@ -14,7 +14,7 @@ export class HttpService {
 		const vm = this;
 
 		vm.get = <T>(baseUrl: string, secondaryUrl: string) => {
-			return vm.httpClient.get<T>(baseUrl).pipe(map((response: T) => {
+			return vm.httpClient.get<T>(baseUrl + secondaryUrl).pipe(map((response: T) => {
 				return response;
 			}));
 		};

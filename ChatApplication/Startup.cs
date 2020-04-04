@@ -14,6 +14,8 @@ using System.Text;
 using ChatApplication.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApplication
 {
@@ -37,7 +39,12 @@ namespace ChatApplication
 
             services.AddControllers();
 
-            services.AddSignalR();
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
             // Enable CORS
             services.AddCors(options =>
@@ -75,6 +82,22 @@ namespace ChatApplication
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false
+                };
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = chatContext =>
+                    {
+                        var accessToken = chatContext.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var httpContextRequestPath = chatContext.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (httpContextRequestPath.StartsWithSegments("/chatHub")))
+                        {
+                            // Read the token out of the query string
+                            chatContext.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
         }

@@ -213,3 +213,7 @@ img {
   height: 516px;
   overflow-y: auto;
 }
+
+.user-list{
+  padding: 5px 0px 0px 0px;
+}

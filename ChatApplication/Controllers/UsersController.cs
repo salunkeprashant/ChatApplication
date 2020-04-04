@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
@@ -37,26 +38,31 @@ namespace ChatApplication.Controllers
             }
 
             Expression<Func<User, bool>> userPredicate = (x => x.Username == credentials.Username && x.Password == credentials.Password);
-            
+
             var user = await this.userRepository.FindOneAsync(userPredicate);
 
             // authentication successful so generate jwt token
+            user.BearerToken = GenerateBearerToken(user);
+
+            return Ok(user);
+        }
+
+        private string GenerateBearerToken(User user)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Constants.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Username.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.BearerToken = tokenHandler.WriteToken(token);
 
-            return Ok(user);
+            return tokenHandler.WriteToken(token);
         }
 
         [HttpPost("register"), AllowAnonymous]
@@ -92,8 +98,15 @@ namespace ChatApplication.Controllers
             return Ok();
         }
 
+        [HttpGet("list")]
+        public IQueryable<User> ListUsers()
+        {
+            return userRepository.AsQueryable();
+        }
+
         [HttpGet("Ping"), AllowAnonymous]
-        public string Ping() {
+        public string Ping()
+        {
             return "Api is up and running";
         }
 

@@ -9,7 +9,8 @@ export const environment = {
 
   users : {
     login : 'users/login',
-    register : 'users/register'
+    register : 'users/register',
+    list : 'users/list'
   }
 };
 

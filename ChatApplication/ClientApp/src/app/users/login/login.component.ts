@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ICredentials } from 'src/app/shared/interface/icredentials';
 import { ApiService } from 'src/app/shared/service/api.service';
 import { Router } from '@angular/router';
+import { ChatService } from 'src/app/chat/service/chat.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
   public isLoogedIn: boolean = false;
 
 
-  constructor(private apiService: ApiService, private router: Router) {
+  constructor(private apiService: ApiService, private router: Router, private chatService : ChatService) {
   }
 
   ngOnInit() {
@@ -30,8 +31,8 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.apiService.Login(this.credentials).subscribe(respnse => {
-      localStorage.setItem('BearerToken', respnse.bearerToken);    
+    this.apiService.Login(this.credentials).subscribe(response => {
+      this.chatService.setUser(response);
       this.isLoogedIn = true;
       this.router.navigate(['chat']);
     });

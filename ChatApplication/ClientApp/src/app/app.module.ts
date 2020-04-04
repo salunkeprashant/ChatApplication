@@ -14,6 +14,7 @@ import { RegisterComponent } from './users/register/register.component';
 import { HttpService } from './shared/service/http.service';
 import { AuthGuardService } from './shared/service/auth-guard.service';
 import { AuthService } from './shared/service/auth.service';
+import { TokenInterceptor } from './shared/interceptor/token.inteceptor';
 
 const ROUTES: Routes = [
   {
@@ -38,7 +39,17 @@ const ROUTES: Routes = [
     FormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [ChatService, HttpService, AuthService , AuthGuardService],
+  providers: [
+    ChatService, 
+    HttpService, 
+    AuthService , 
+    AuthGuardService,
+    {
+			provide: HTTP_INTERCEPTORS,
+			useClass: TokenInterceptor,
+			multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
