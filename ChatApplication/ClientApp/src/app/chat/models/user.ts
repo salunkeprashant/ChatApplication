@@ -4,4 +4,5 @@ export class User {
     address: any;
     password: string;
     bearerToken: string;
+    id: any;
 }

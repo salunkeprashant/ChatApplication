@@ -5,6 +5,7 @@ using ChatApplication.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -37,10 +38,10 @@ namespace ChatApplication.Test
 
             // Creat and send a message
             Message message = new Message();
-            message.message = "Hii";
-            message.date = DateTime.Today;
-            message.type = "Sent";
-            message.username = "Prashant";
+            message.Content = "Hii";
+            message.SentOn = DateTime.Today;
+            message.Type = "Sent";
+            message.RecipientId = new ObjectId().ToString();
 
             await chatHub.SendPrivateMessage(message);
 

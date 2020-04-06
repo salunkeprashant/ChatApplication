@@ -4,6 +4,7 @@ using ChatApplication.Model;
 using ChatApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
@@ -15,7 +16,10 @@ namespace ChatApplication.Hubs
     {
         public async Task SendPrivateMessage(Message message)
         {
-            await Clients.User(message.username).SendAsync("MessageReceived", message);
+            message.SenderId = Helper.Constants.BuildObjectId(message.SenderId);
+            message.RecipientId = Helper.Constants.BuildObjectId(message.SenderId);
+
+            await Clients.User(message.RecipientId.ToString()).SendAsync("MessageReceived", message);
         }
     }
 }

@@ -11,12 +11,13 @@ import { ApiService } from 'src/app/shared/service/api.service';
 })
 export class ChatareaComponent implements OnInit {
   txtMessage: string = '';
-  username: string = '';
   messages = new Array<Message>();
   message = new Message();
 
+  senderId : string;
   users = new Array<User>();
   displayname: string;
+  selectedUserId: string;
 
   constructor(
     private chatService: ChatService,
@@ -34,8 +35,8 @@ export class ChatareaComponent implements OnInit {
     // Subscribe to events
     this.chatService.messageReceived.subscribe((message: Message) => {
       this.ngZone.run(() => {
-        if (message.username !== this.username) {
-          message.type = "received";
+        if (message.RecipientId != this.senderId) {
+          message.Type = "received";
           this.messages.push(message);
         }
       });
@@ -43,8 +44,8 @@ export class ChatareaComponent implements OnInit {
 
     this.chatService.getUser().subscribe(user => {
       if (user != null) {
-        this.username = user.username;
         this.displayname = `${user.personalInformation.firstName} ${user.personalInformation.lastName}`;
+        this.senderId = user.id;
         this.getUserList();
       }
     });
@@ -56,13 +57,25 @@ export class ChatareaComponent implements OnInit {
     });
   }
 
+  selectUser(usr) {
+    this.selectedUserId = this.users.filter(user => user.username == usr.username).map(x => x.id)[0];
+  
+    // TODO : Get selected peroson conversation history
+  }
+
+  getDislayNameById(id){
+    let user = this.users.filter(x=>x.id == id)[0];
+    return `${user.personalInformation.firstName} ${user.personalInformation.lastName}`;
+  }
+
   sendMessage(): void {
     if (this.txtMessage) {
       this.message = new Message();
-      this.message.username = this.username;
-      this.message.type = "sent";
-      this.message.message = this.txtMessage;
-      this.message.date = new Date();
+      this.message.SenderId = this.senderId;
+      this.message.RecipientId = this.selectedUserId;
+      this.message.Type = "sent";
+      this.message.Content = this.txtMessage;
+      this.message.SentOn = new Date();
       this.messages.push(this.message);
       this.chatService.sendMessage(this.message);
       this.txtMessage = '';

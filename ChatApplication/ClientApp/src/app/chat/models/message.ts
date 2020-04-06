@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
+
 export class Message {
-    username: string;
-    type: string;
-    date: Date;
-    message: string;
+    SenderId: string;
+    RecipientId: string;
+    Type: string;
+    SentOn: Date;
+    Content: string;
 }
