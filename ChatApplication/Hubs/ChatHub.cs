@@ -16,10 +16,7 @@ namespace ChatApplication.Hubs
     {
         public async Task SendPrivateMessage(Message message)
         {
-            message.SenderId = Helper.Constants.BuildObjectId(message.SenderId);
-            message.RecipientId = Helper.Constants.BuildObjectId(message.SenderId);
-
-            await Clients.User(message.RecipientId.ToString()).SendAsync("MessageReceived", message);
+            await Clients.User(message.RecipientId).SendAsync("MessageReceived", message);
         }
     }
 }

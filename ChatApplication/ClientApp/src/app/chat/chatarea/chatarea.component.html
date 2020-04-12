@@ -6,7 +6,7 @@
       <span class="contact-name">Recent Chats</span>
       <ul class="clearfix" *ngIf="users">
         <li *ngFor="let user of users">
-          <span class="user-list" (click)="selectUser(user)">{{ user.personalInformation.firstName }} {{ user.personalInformation.lastName }}</span>
+          <span class="user-list" (click)="selectUser(user)">{{ user.PersonalInformation.FirstName }} {{ user.PersonalInformation.LastName }}</span>
         </li>
       </ul> 
     </div>
@@ -16,22 +16,22 @@
         <div class="mesgs">
           <div class="msg_history">
             <div *ngFor="let msg of messages">
-              <div class="incoming_msg" *ngIf="msg.type == 'received'">
+              <div class="incoming_msg" *ngIf="msg.Type == 'received'">
                 <div class="incoming_msg_img"> </div>
                 <div class="received_msg">
-                  {{getDislayNameById(msg.senderId)}}
+                  {{getDislayNameById(msg.SenderId)}}
                   <div class="received_withd_msg">
                     <p>
-                      {{msg.Conent}}
+                      {{msg.Content}}
                     </p>
                     <span class="time_date"> {{msg.SentOn | timeAgo}} </span>
                   </div>
                 </div>
               </div>
-              <div class="outgoing_msg" *ngIf="msg.type == 'sent'">
+              <div class="outgoing_msg" *ngIf="msg.Type == 'sent'">
                 <div class="sent_msg">
                   <p>
-                    {{msg.Conent}}
+                    {{msg.Content}}
                   </p>
                   <span class="time_date"> {{msg.SentOn | timeAgo}}</span>
                 </div>

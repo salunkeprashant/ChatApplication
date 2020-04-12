@@ -26,12 +26,10 @@ export class ChatService {
         });
       }
     });
-
-    
   }
 
   setUser(user: User) {
-    localStorage.setItem('BearerToken', user.bearerToken);
+    localStorage.setItem('BearerToken', user.BearerToken);
     this.user.next(user);
   }
 

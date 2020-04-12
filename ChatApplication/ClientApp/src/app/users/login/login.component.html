@@ -35,8 +35,7 @@
                                         <input class="input mb-40" type="{{defaultPasswordFieldType}}" id="txtPassword"
                                             name="txtPassword" #txtPassword="ngModel" placeholder="Password"
                                             [(ngModel)]="credentials.Password" required />
-                                        <span class="first">
-                                            <img src="assets/images/lock.png"></span>
+                                   
                                         <span toggle="#password-field" class="toggle-password eye-a"
                                             (click)="changePasswordFieldType()"><img src="assets/images/eye.png"></span>
 
@@ -47,10 +46,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="alert alert-error-message">
-                                            <div *ngIf="errors && frmLogin.valid">
+                                        <div *ngIf="errors && frmLogin.valid" class="alert alert-error-message">
                                                 {{ errors }}
-                                            </div>
                                         </div>
 
                                     </div>

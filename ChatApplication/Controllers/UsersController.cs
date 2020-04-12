@@ -41,6 +41,9 @@ namespace ChatApplication.Controllers
 
             var user = await this.userRepository.FindOneAsync(userPredicate);
 
+            if (user == null)
+                return Unauthorized();
+
             // authentication successful so generate jwt token
             user.BearerToken = GenerateBearerToken(user);
 

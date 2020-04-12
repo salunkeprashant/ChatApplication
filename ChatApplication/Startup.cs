@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Serialization;
 
 namespace ChatApplication
 {
@@ -37,11 +38,18 @@ namespace ChatApplication
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            });
 
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
+            })
+            .AddNewtonsoftJsonProtocol(options =>
+            {
+                options.PayloadSerializerSettings.ContractResolver = new DefaultContractResolver();
             });
 
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();

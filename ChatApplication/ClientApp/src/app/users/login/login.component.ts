@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit {
       this.chatService.setUser(response);
       this.isLoogedIn = true;
       this.router.navigate(['chat']);
+    }, error =>{
+      this.errors = "User doesn't exists or check your credentials";
     });
   }
 

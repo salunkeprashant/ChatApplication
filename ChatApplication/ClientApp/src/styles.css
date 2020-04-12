@@ -1,12 +1,111 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0 !important;
 }
 
-code {
-  color: #e01a76;
+body {
+  padding: 0px;
+  margin: 0px;
+  font-weight: 400;
+  font-size: 16px;
+  font-style: normal;
+  box-sizing: border-box;
+  background: #f0f0f0;
+}
+
+.signin-wrap .form-main form label.main-label.big,
+.main-label.big {
+    color: #333333 !important;
+    font-size: 24px;
+}
+
+.form-title-description {
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 300;
+}
+
+.login label.mini {
+    font-size: 14px;
+}
+
+.align-bottom {
+    align-items: flex-end;
+}
+
+label.small-dark {
+    line-height: 1;
+    font-size: 16px;
+    font-weight: 500;
+    color: #464444;
+    margin-right: 5px
+}
+
+.signin-wrap .form-main form input.formal-input {
+    font-weight: 500 !important;
+    color: #464444;
+    padding: 20px 20px;
+    font-weight: normal;
+    font-size: 17px;
+    color: #383636;
+    margin-bottom: 30px;
+    border-radius: 0px;
+    background-color: #ffff;
+    border: 1px solid #535353 !important;
+    box-shadow: none !important;
+}
+
+.signin-wrap .form-main form {
+    max-width: 100% !important
+}
+
+.signin-wrap .form-main form button {
+    padding: 10px 30px;
+    font-weight: 500;
+}
+
+.signin-wrap .form-main form button.border-btn,
+.border-btn {
+    border: 1px solid #535353 !important;
+    background-color: transparent;
+    font-weight: 500;
+}
+
+.j-between {
+    justify-content: space-between;
+}
+
+.field-container {
+    min-height: 260px;
+    padding-bottom: 30px;
+}
+
+.signin-wrap .form-main form button {
+    min-width: 140px
+}
+
+.border-btn:hover {
+    background-color: #535353 !important;
+    color: #ffffff !important;
+}
+
+.signin-wrap .form-main form button:hover {
+    color: #000000;
+    background: #dcc90a;
+    transition: 800ms;
+}
+
+.signin-wrap {
+    max-height: auto;
+}
+
+.signin-wrap {
+    height: auto !important;
+    min-height: 100vh;
 }
 
 .btn-primary {
@@ -14,3 +113,32 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.alert.alert-error-message {
+  margin-top: -25px;
+  font-size: 14px;
+  padding-bottom: 5px;
+  color: #d25454;
+  width: 100%;
+  flex-direction: row;
+  background: #ffffff;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.signin-wrap .alert.alert-error-message {
+  margin-top:-10px;
+  padding-left:0px;
+}
+
+
+.eye-a {
+  position: absolute;
+  right:15px;
+  top: 10px;
+  cursor: pointer;
+}
+
+
+
+.alert.alert-error-message{margin-bottom:0px;}

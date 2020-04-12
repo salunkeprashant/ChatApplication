@@ -35,7 +35,7 @@ export class ChatareaComponent implements OnInit {
     // Subscribe to events
     this.chatService.messageReceived.subscribe((message: Message) => {
       this.ngZone.run(() => {
-        if (message.RecipientId != this.senderId) {
+        if (message.SenderId != this.senderId) {
           message.Type = "received";
           this.messages.push(message);
         }
@@ -44,8 +44,8 @@ export class ChatareaComponent implements OnInit {
 
     this.chatService.getUser().subscribe(user => {
       if (user != null) {
-        this.displayname = `${user.personalInformation.firstName} ${user.personalInformation.lastName}`;
-        this.senderId = user.id;
+        this.displayname = `${user.PersonalInformation.FirstName} ${user.PersonalInformation.LastName}`;
+        this.senderId = user.Id;
         this.getUserList();
       }
     });
@@ -58,14 +58,14 @@ export class ChatareaComponent implements OnInit {
   }
 
   selectUser(usr) {
-    this.selectedUserId = this.users.filter(user => user.username == usr.username).map(x => x.id)[0];
+    this.selectedUserId = this.users.filter(user => user.Id == usr.Id).map(x => x.Id)[0];
   
     // TODO : Get selected peroson conversation history
   }
 
   getDislayNameById(id){
-    let user = this.users.filter(x=>x.id == id)[0];
-    return `${user.personalInformation.firstName} ${user.personalInformation.lastName}`;
+    let user = this.users.filter(x=>x.Id == id)[0];
+    return `${user.PersonalInformation.FirstName} ${user.PersonalInformation.LastName}`;
   }
 
   sendMessage(): void {
