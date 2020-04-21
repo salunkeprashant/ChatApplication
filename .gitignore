@@ -233,3 +233,5 @@ _Pvt_Extensions
 .tscache/**
 .vs/
 .vscode/
+/Data
+/ClientApp/package-lock.json
